@@ -35,7 +35,7 @@ function drawRover() {
 //Command Type
 type Command = {
   execute: () => void;
-}
+};
 
 //Invoker
 function runCommand(command: Command) {
@@ -49,16 +49,15 @@ const foward: Command = {
     if (direction === 2) y = Math.min(4, y + 1);
     if (direction === 3) x = Math.max(0, x - 1);
     drawRover();
-  }
-}
+  },
+};
 
 const right: Command = {
   execute: () => {
     direction = (direction + 1) % 4;
     drawRover();
-  }
-}
-
+  },
+};
 
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
   runCommand(foward);
