@@ -73,6 +73,12 @@ function newupdate() {
     ctx.fillStyle = stat.color;
     ctx.fillRect(18, j + 8, stat.value * 14, 20);
   }
+
+  //bottom display
+  readout.textContent =
+    `Assigned: ${producers}/6 · Production: ${production} · Consumption: ${consumption} · Balance: ${
+      balance > 0 ? "+" : ""
+    }${balance}`;
 }
 
 function calculate() {
