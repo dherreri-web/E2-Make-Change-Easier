@@ -3,6 +3,12 @@ export {};
 const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
+const Queue = document.querySelector<HTMLOListElement>("#rover-pending")!;
+const status = document.querySelector<HTMLParagraphElement>(
+  "#rover-queue-status",
+)!;
+const runButton = document.querySelector<HTMLButtonElement>("#rover-run")!;
+const clearButton = document.querySelector<HTMLButtonElement>("#rover-clear")!;
 
 const directions = [
   { name: "North", _x: 0, _y: -1 },
@@ -41,8 +47,12 @@ function drawRover() {
 
 //Command Type
 type Command = {
+  label: string;
   execute: () => void;
 };
+
+//List to hold Commands
+const commandQueue: Command[] = [];
 
 //Invoker
 function runCommand(command: Command) {
@@ -50,6 +60,7 @@ function runCommand(command: Command) {
 }
 
 const foward: Command = {
+  label: "Foward",
   execute: () => {
     const current = directions[direction];
     x = Math.max(0, Math.min(4, x + current._x));
@@ -59,22 +70,58 @@ const foward: Command = {
 };
 
 const right: Command = {
+  label: "Right",
   execute: () => {
     direction = (direction + 1) % 4;
     drawRover();
   },
 };
 
+function generateQueue() {
+  Queue.replaceChildren();
+
+  for (const command of commandQueue) {
+    const item = document.createElement("li");
+    item.textContent = command.label;
+    Queue.appendChild(item);
+  }
+  status.textContent = commandQueue.length === 0
+    ? "No Pending Commands"
+    : `${commandQueue.length} pending command`;
+
+  runButton.disabled = commandQueue.length === 0;
+  clearButton.disabled = commandQueue.length === 0;
+}
+
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
-  runCommand(foward);
+  commandQueue.push(foward);
+  generateQueue();
 };
 document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
-  runCommand(right);
+  commandQueue.push(right);
+  generateQueue();
 };
 document.querySelector<HTMLButtonElement>("#rover-reset")!.onclick = () => {
   x = 2;
   y = 2;
   direction = 0;
+
+  commandQueue.length = 0;
+  generateQueue();
   drawRover();
 };
+
+runButton.onclick = () => {
+  while (commandQueue.length > 0) {
+    const command = commandQueue.shift()!;
+    runCommand(command);
+  }
+  generateQueue();
+};
+
+clearButton.onclick = () => {
+  commandQueue.length = 0;
+  generateQueue();
+};
+generateQueue();
 drawRover();
