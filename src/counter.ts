@@ -2,7 +2,7 @@ export {};
 
 const canvas = document.querySelector<HTMLCanvasElement>("#counter-canvas")!;
 const ctx = canvas.getContext("2d")!;
-const _readout = document.querySelector<HTMLParagraphElement>(
+const readout = document.querySelector<HTMLParagraphElement>(
   "#counter-readout",
 )!;
 const host = document.querySelector<HTMLDivElement>("#counter-panel-host")!;
@@ -19,6 +19,7 @@ type shieldsnapshot = {
 let count = 0;
 let panel: HTMLParagraphElement | null = null;
 let panelUpdates = 0;
+const shieldevents = new EventTarget();
 
 function getsheildsnapshot(): shieldsnapshot {
   return {
@@ -41,6 +42,12 @@ function drawMeter() {
   ctx.fillText(`${shield.charge} / ${shield.capacity} shield`, 12, 100);
 }
 
+shieldevents.addEventListener("shield_change", () => {
+  drawMeter();
+  const shield = getsheildsnapshot();
+  readout.textContent = `Shield charge: ${shield.charge} / ${shield.capacity}`;
+});
+
 function updateStats() {
   panelUpdates++;
   diagnostic.textContent = `Inspector deliveries: ${panelUpdates}`;
@@ -59,7 +66,7 @@ function setCount(next: number) {
   const bounded = Math.max(0, Math.min(10, next));
   if (bounded === count) return;
   count = bounded;
-  drawMeter();
+  shieldevents.dispatchEvent(new Event("shield_change"));
   if (panel) updateStats();
 }
 
