@@ -35,7 +35,7 @@ function update() {
     }${balance}`;
 }
 
-function calculate(){
+function calculate() {
   production = producers * 3;
   consumption = 6;
   balance = production - consumption;
