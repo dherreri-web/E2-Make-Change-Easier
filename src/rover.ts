@@ -3,20 +3,7 @@ export {};
 const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
-const Queue = document.querySelector<HTMLOListElement>("#rover-pending")!;
-const status = document.querySelector<HTMLParagraphElement>(
-  "#rover-queue-status",
-)!;
-const runButton = document.querySelector<HTMLButtonElement>("#rover-run")!;
-const clearButton = document.querySelector<HTMLButtonElement>("#rover-clear")!;
-
-const directions = [
-  { name: "North", _x: 0, _y: -1 },
-  { name: "East", _x: 1, _y: 0 },
-  { name: "South", _x: 0, _y: 1 },
-  { name: "West", _x: -1, _y: 0 },
-];
-
+const headings = ["North", "East", "South", "West"];
 let x = 2;
 let y = 2;
 let direction = 0;
