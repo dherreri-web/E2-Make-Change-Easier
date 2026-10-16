@@ -3,7 +3,14 @@ export {};
 const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
-const headings = ["North", "East", "South", "West"];
+
+const directions = [
+  { name: "North", _x: 0, _y: -1 },
+  { name: "East", _x: 1, _y: 0 },
+  { name: "South", _x: 0, _y: 1 },
+  { name: "West", _x: -1, _y: 0 },
+];
+
 let x = 2;
 let y = 2;
 let direction = 0;
@@ -28,7 +35,7 @@ function drawRover() {
   ctx.fill();
   ctx.restore();
   readout.textContent = `Position: (${x}, ${y}) · Facing: ${
-    headings[direction]
+    directions[direction].name
   }`;
 }
 
@@ -44,10 +51,9 @@ function runCommand(command: Command) {
 
 const foward: Command = {
   execute: () => {
-    if (direction === 0) y = Math.max(0, y - 1);
-    if (direction === 1) x = Math.min(4, x + 1);
-    if (direction === 2) y = Math.min(4, y + 1);
-    if (direction === 3) x = Math.max(0, x - 1);
+    const current = directions[direction];
+    x = Math.max(0, Math.min(4, x + current._x));
+    y = Math.max(0, Math.min(4, y + current._y));
     drawRover();
   },
 };
