@@ -3,7 +3,19 @@ export {};
 const canvas = document.querySelector<HTMLCanvasElement>("#rover-canvas")!;
 const ctx = canvas.getContext("2d")!;
 const readout = document.querySelector<HTMLParagraphElement>("#rover-readout")!;
-const headings = ["North", "East", "South", "West"];
+const queueList = document.querySelector<HTMLOListElement>("#rover-pending")!;
+const status = document.querySelector<HTMLParagraphElement>(
+  "#rover-queue-status",
+)!;
+const runButton = document.querySelector<HTMLButtonElement>("#rover-run")!;
+const clearButton = document.querySelector<HTMLButtonElement>("#rover-clear")!;
+
+const directions = [
+  { name: "North", _x: 0, _y: -1 },
+  { name: "East", _x: 1, _y: 0 },
+  { name: "South", _x: 0, _y: 1 },
+  { name: "West", _x: -1, _y: 0 },
+];
 let x = 2;
 let y = 2;
 let direction = 0;
@@ -46,8 +58,8 @@ function runCommand(command: Command) {
   command.execute();
 }
 
-const foward: Command = {
-  label: "Foward",
+const forward: Command = {
+  label: "Forward",
   execute: () => {
     const current = directions[direction];
     x = Math.max(0, Math.min(4, x + current._x));
@@ -65,12 +77,12 @@ const right: Command = {
 };
 
 function generateQueue() {
-  Queue.replaceChildren();
+  queueList.replaceChildren();
 
   for (const command of commandQueue) {
     const item = document.createElement("li");
     item.textContent = command.label;
-    Queue.appendChild(item);
+    queueList.appendChild(item);
   }
   status.textContent = commandQueue.length === 0
     ? "No Pending Commands"
@@ -81,7 +93,7 @@ function generateQueue() {
 }
 
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
-  commandQueue.push(foward);
+  commandQueue.push(forward);
   generateQueue();
 };
 document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
