@@ -6,11 +6,11 @@ const readout = document.querySelector<HTMLParagraphElement>(
   "#allocation-readout",
 )!;
 let producers = 2;
+let production = producers * 3;
+let consumption = 6;
+let balance = production - consumption;
 
 function update() {
-  const production = producers * 3;
-  const consumption = 6;
-  const balance = production - consumption;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < 6; i++) {
     ctx.fillStyle = i < producers ? "#27766b" : "#c9d2c9";
@@ -35,17 +35,26 @@ function update() {
     }${balance}`;
 }
 
+function calculate(){
+  production = producers * 3;
+  consumption = 6;
+  balance = production - consumption;
+}
+
 document.querySelector<HTMLButtonElement>("#allocation-less")!.onclick = () => {
   producers = Math.max(0, producers - 1);
+  calculate();
   update();
 };
 document.querySelector<HTMLButtonElement>("#allocation-more")!.onclick = () => {
   producers = Math.min(6, producers + 1);
+  calculate();
   update();
 };
 document.querySelector<HTMLButtonElement>("#allocation-reset")!.onclick =
   () => {
     producers = 2;
+    calculate();
     update();
   };
 update();
