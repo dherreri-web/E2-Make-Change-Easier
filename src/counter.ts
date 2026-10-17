@@ -10,6 +10,7 @@ const diagnostic = document.querySelector<HTMLParagraphElement>(
   "#counter-diagnostic",
 )!;
 
+//shield object
 type shieldsnapshot = {
   charge: number;
   capacity: number;
