@@ -21,6 +21,12 @@ let panel: HTMLParagraphElement | null = null;
 let panelUpdates = 0;
 const shieldevents = new EventTarget();
 
+function updateInspector() {
+  panelUpdates++;
+  diagnostic.textContent = `Inspector Deliveries ${panelUpdates}`;
+  renderStats();
+}
+
 function getsheildsnapshot(): shieldsnapshot {
   return {
     charge: count,
@@ -48,12 +54,6 @@ shieldevents.addEventListener("shield_change", () => {
   readout.textContent = `Shield charge: ${shield.charge} / ${shield.capacity}`;
 });
 
-function updateStats() {
-  panelUpdates++;
-  diagnostic.textContent = `Inspector deliveries: ${panelUpdates}`;
-  renderStats();
-}
-
 function renderStats() {
   if (!panel) return;
 
@@ -67,7 +67,6 @@ function setCount(next: number) {
   if (bounded === count) return;
   count = bounded;
   shieldevents.dispatchEvent(new Event("shield_change"));
-  if (panel) updateStats();
 }
 
 document.querySelector<HTMLButtonElement>("#counter-less")!.onclick = () => {
@@ -84,9 +83,12 @@ document.querySelector<HTMLButtonElement>("#counter-open")!.onclick = () => {
   panel = document.createElement("p");
   host.append(panel);
   renderStats();
+  shieldevents.addEventListener("shield_change", updateInspector);
 };
 document.querySelector<HTMLButtonElement>("#counter-close")!.onclick = () => {
   if (!panel) return;
+
+  shieldevents.removeEventListener("shield_change", updateInspector);
   panel.remove();
   panel = null;
 };
